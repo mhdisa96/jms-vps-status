@@ -43,7 +43,7 @@ Cara paling gampang:
 - Lalu di VPS:
 
 ```bash
-git clone https://github.com/USERNAME/jms-vps-status.git
+git clone https://github.com/mhdisa96/jms-vps-status.git
 cd jms-vps-status
 ```
 
