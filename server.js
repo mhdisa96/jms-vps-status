@@ -11,18 +11,25 @@ const PORT = process.env.PORT || 3000;
 
 // ================== KONFIGURASI TELEGRAM ==================
 // TODO: Ganti 2 baris di bawah dengan data bot kamu
-const TELEGRAM_BOT_TOKEN = 'ISI_TOKEN_BOT_KAMU_DI_SINI';
-const TELEGRAM_CHAT_ID = 'ISI_CHAT_ID_KAMU_DI_SINI';
+const TELEGRAM_BOT_TOKEN = '8272388200:AAFh7t-2fTaTDZDavnqgBPiTKWMaXe-I3oI';
+const TELEGRAM_CHAT_ID = '7364677220';
 // ==========================================================
 
 // ================== DAFTAR VPS JMS STORE ==================
 const servers = [
   {
     id: 1,
-    name: 'SERVER SG',
+    name: 'SERVER SG 1',
     host: 'sg2.jmsvpn.tech',
     port: 22,
     role: 'Server Singapura (SSH/OVPN)'
+  },
+  {
+    id: 2,
+    name: 'SERVER SG 2',
+    host: 'sg.serverdovip.my.id',
+    port: 22,
+    role: 'Server Indonesia (SSH/OVPN)'
   },
   {
     id: 2,
