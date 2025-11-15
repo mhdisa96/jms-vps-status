@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>JMS STORE - Status VPS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-card: #020617;
+      --bg-card-soft: #0b1120;
+      --border-soft: #1f2937;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.2);
+      --up: #22c55e;
+      --up-soft: rgba(34, 197, 94, 0.2);
+      --down: #ef4444;
+      --down-soft: rgba(239, 68, 68, 0.2);
+      --unknown: #9ca3af;
+      --unknown-soft: rgba(148, 163, 184, 0.2);
+      --radius-xl: 18px;
+      --radius-lg: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at top, #0f172a 0, #020617 45%, #000 100%);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1080px;
+    }
+
+    /* HEADER */
+    .header {
+      background: radial-gradient(circle at top left, #0ea5e9 0, #0f172a 45%, #020617 100%);
+      border-radius: var(--radius-xl);
+      padding: 22px 22px 18px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.8),
+        0 0 0 1px rgba(15, 23, 42, 0.9);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::after {
+      content: "";
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      right: -60px;
+      top: -120px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.23), transparent 60%);
+      filter: blur(4px);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .brand {
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.7);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.4);
+    }
+
+    .brand-name {
+      margin-top: 10px;
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #e0f2fe;
+      text-shadow: 0 0 22px rgba(8, 47, 73, 0.9);
+    }
+
+    .brand-sub {
+      margin-top: 6px;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      max-width: 460px;
+    }
+
+    /* STATS BAR */
+    .stats-row {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .stat-card {
+      background: rgba(15, 23, 42, 0.88);
+      border-radius: 14px;
+      padding: 10px 11px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .stat-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .stat-chip {
+      font-size: 0.75rem;
+      margin-top: 2px;
+      padding: 1px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .stat-pill {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+    }
+
+    .pill-up { background: var(--up); }
+    .pill-down { background: var(--down); }
+    .pill-unknown { background: var(--unknown); }
+
+    /* CONTENT */
+    .content {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 16px;
+    }
+
+    .panel {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: var(--radius-xl);
+      padding: 14px;
+      border: 1px solid var(--border-soft);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.9);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 8px;
+    }
+
+    .panel-title {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .updated {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* TABLE STYLE INSIDE PANEL */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    thead tr {
+      background: #020617;
+    }
+
+    th, td {
+      padding: 7px 8px;
+      text-align: left;
+      border-bottom: 1px solid #1f2937;
+    }
+
+    th {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-up {
+      background: var(--up-soft);
+      color: #bbf7d0;
+    }
+
+    .badge-down {
+      background: var(--down-soft);
+      color: #fecaca;
+    }
+
+    .badge-unknown {
+      background: var(--unknown-soft);
+      color: #e5e7eb;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      margin-right: 6px;
+      position: relative;
+    }
+
+    .dot-up {
+      background: var(--up);
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.35);
+      animation: pulseUp 1.5s infinite;
+    }
+
+    .dot-down {
+      background: var(--down);
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.35);
+    }
+
+    .dot-unknown {
+      background: var(--unknown);
+      box-shadow: 0 0 0 4px rgba(148, 163, 184, 0.35);
+    }
+
+    @keyframes pulseUp {
+      0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.45); }
+      70% { box-shadow: 0 0 0 7px rgba(34, 197, 94, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px dashed rgba(148, 163, 184, 0.5);
+    }
+
+    .tag-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.9);
+    }
+
+    /* SIDE PANEL */
+    .side-info {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .pill-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 9px;
+      font-size: 0.78rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+    }
+
+    .pill span.circle {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+    }
+
+    .circle-up { background: var(--up); }
+    .circle-down { background: var(--down); }
+    .circle-unknown { background: var(--unknown); }
+
+    .footer {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 800px) {
+      .content {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .stats-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 540px) {
+      body {
+        padding: 16px;
+      }
+      .header {
+        padding: 18px 16px 14px;
+      }
+      .brand-name {
+        font-size: 26px;
+      }
+      .stats-row {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- HEADER -->
+    <header class="header">
+      <div class="brand">
+        <div class="brand-badge">
+          <span class="brand-dot"></span>
+          <span>JMS STORE · Monitoring VPS</span>
+        </div>
+        <div class="brand-name">JMS STORE</div>
+        <p class="brand-sub">
+          Panel status server internal JMS STORE untuk memantau
+          kesehatan VPS layanan secara cepat dan mudah.
+        </p>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card" id="stat-total">
+          <div class="stat-label">Total VPS</div>
+          <div class="stat-value" id="totalVps">-</div>
+          <div class="stat-chip">
+            <span class="stat-pill" style="background: var(--accent);"></span>
+            Semua server terdaftar
+          </div>
+        </div>
+
+        <div class="stat-card" id="stat-up">
+          <div class="stat-label">Online</div>
+          <div class="stat-value" id="onlineVps">-</div>
+          <div class="stat-chip">
+            <span class="stat-pill pill-up"></span>
+            Respon normal
+          </div>
+        </div>
+
+        <div class="stat-card" id="stat-down">
+          <div class="stat-label">Offline / Error</div>
+          <div class="stat-value" id="offlineVps">-</div>
+          <div class="stat-chip">
+            <span class="stat-pill pill-down"></span>
+            Perlu dicek
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <main class="content">
+      <!-- PANEL DAFTAR VPS -->
+      <section class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Daftar VPS</div>
+          <div class="updated" id="updatedAt">Memuat...</div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Nama</th>
+              <th>Host / IP</th>
+              <th>Peran</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="serversBody">
+            <tr>
+              <td colspan="4">Memuat data...</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- PANEL INFO SAMPING -->
+      <aside class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Info Panel</div>
+        </div>
+        <div class="side-info">
+          <p>
+            Halaman ini menampilkan status VPS yang digunakan oleh
+            <strong>JMS STORE</strong>. Status dicek otomatis dari VPS
+            menggunakan koneksi TCP ke port yang kamu tentukan di server.
+          </p>
+          <div>
+            <div class="tag">
+              <span class="tag-dot"></span>
+              Edit daftar VPS di <code>server.js</code> bagian <code>servers</code>.
+            </div>
+          </div>
+          <div>
+            <div>Legenda status:</div>
+            <div class="pill-row">
+              <span class="pill">
+                <span class="circle circle-up"></span>
+                Online · Port merespon
+              </span>
+              <span class="pill">
+                <span class="circle circle-down"></span>
+                Offline · Tidak merespon / timeout
+              </span>
+              <span class="pill">
+                <span class="circle circle-unknown"></span>
+                Unknown · Gagal membaca data
+              </span>
+            </div>
+          </div>
+          <p>
+            Kamu bisa menambahkan fitur lanjutan seperti notifikasi Telegram,
+            logging downtime, atau grafik history di versi berikutnya.
+          </p>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="footer">
+      © 2025 JMS STORE · Internal VPS Status Monitor
+    </footer>
+  </div>
+
+  <script>
+    async function loadStatus() {
+      const tbody = document.getElementById("serversBody");
+      const updatedEl = document.getElementById("updatedAt");
+      const totalEl = document.getElementById("totalVps");
+      const onlineEl = document.getElementById("onlineVps");
+      const offlineEl = document.getElementById("offlineVps");
+
+      try {
+        const res = await fetch("/api/status");
+        const data = await res.json();
+
+        const servers = data.servers || [];
+
+        const total = servers.length;
+        const online = servers.filter((s) => s.online).length;
+        const offline = servers.filter((s) => !s.online).length;
+
+        totalEl.textContent = total;
+        onlineEl.textContent = online;
+        offlineEl.textContent = offline;
+
+        updatedEl.textContent =
+          "Terakhir cek: " +
+          new Date(data.updatedAt).toLocaleString("id-ID");
+
+        tbody.innerHTML = "";
+
+        servers.forEach((s) => {
+          const tr = document.createElement("tr");
+
+          let statusText = s.online ? "Online" : "Offline";
+          let badgeClass = s.online ? "badge-up" : "badge-down";
+          let dotClass = s.online ? "dot-up" : "dot-down";
+
+          tr.innerHTML = `
+            <td>${s.name}</td>
+            <td>${s.host}:${s.port}</td>
+            <td>${s.role || "-"}</td>
+            <td>
+              <span class="badge ${badgeClass}">
+                <span class="dot ${dotClass}"></span>${statusText}
+              </span>
+            </td>
+          `;
+
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error(err);
+        updatedEl.textContent = "Gagal memuat data.";
+        tbody.innerHTML =
+          '<tr><td colspan="4">Tidak bisa mengambil data dari server.</td></tr>';
+      }
+    }
+
+    loadStatus();
+    setInterval(loadStatus, 10000);
+  </script>
+</body>
+</html>
