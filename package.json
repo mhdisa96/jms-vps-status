@@ -1,0 +1,12 @@
+{
+  "name": "jms-vps-status",
+  "version": "1.2.0",
+  "description": "JMS STORE VPS status monitor with Telegram alerts",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
