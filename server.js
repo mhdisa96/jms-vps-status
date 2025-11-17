@@ -32,9 +32,23 @@ const servers = [
     role: 'Server Indonesia (SSH/OVPN)'
   },
   {
-    id: 2,
-    name: 'SERVER ID',
+    id: 3,
+    name: 'SERVER ID 1',
     host: 'neva-id.vpn-premium.xyz',
+    port: 22,
+    role: 'Server Indonesia (SSH/OVPN)'
+  },
+  {
+    id: 4,
+    name: 'SERVER ID 2',
+    host: '160.19.167.115',
+    port: 22,
+    role: 'Server Indonesia (SSH/OVPN)'
+  },
+  {
+    id: 5,
+    name: 'SERVER ID 3',
+    host: '103.161.184.215',
     port: 22,
     role: 'Server Indonesia (SSH/OVPN)'
   }
